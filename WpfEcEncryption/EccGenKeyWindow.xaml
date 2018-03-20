@@ -1,0 +1,45 @@
+﻿<Window x:Class="WpfEcEncryption.EccGenKeyWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfEcEncryption"
+        mc:Ignorable="d"
+        Title="Generate Keys" Height="179.812" Width="360.356" WindowStyle="ToolWindow" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
+    <Grid x:Name="EccGenKeyWin" Margin="-5,0,5,0">
+        <TextBox x:Name="txtChosenPwd" HorizontalAlignment="Left" Height="23" Margin="10,20,0,0" VerticalAlignment="Top" Width="334" MaxLength="30" KeyDown="txtChosenPwd_KeyDown"/>
+        <Label x:Name="LblChPwd" Content="Choose a Pasword (max 30 chars)" HorizontalAlignment="Left" Margin="10,1,0,0" VerticalAlignment="Top" FontSize="9"/>
+        <ProgressBar x:Name="pbStrength" HorizontalAlignment="Left" Height="23" Margin="10,50,0,0" VerticalAlignment="Top" Width="280" RenderTransformOrigin="-0.111,-0.244" Maximum="130" Background="White" SmallChange="2">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="-90"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="Lime" Offset="1"/>
+                    <GradientStop Color="Red" Offset="0.35"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+            <ProgressBar.RenderTransform>
+                <TransformGroup>
+                    <RotateTransform Angle="0" />
+                </TransformGroup>
+            </ProgressBar.RenderTransform>
+        </ProgressBar>
+        <Label x:Name="lblCharLength" Content="Label" HorizontalAlignment="Left" Margin="296,47,0,0" VerticalAlignment="Top" Height="25" Width="48"/>
+        <TextBlock x:Name="txbStrength" HorizontalAlignment="Left" Margin="122,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="TextBlock"/>
+        <TextBlock x:Name="txbHash" HorizontalAlignment="Left" Margin="10,92,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" RenderTransformOrigin="-2.642,-2.342" Width="334" Height="23" FontSize="10">
+            <TextBlock.ContextMenu>
+                <ContextMenu/>
+            </TextBlock.ContextMenu>
+        </TextBlock>
+        <Label x:Name="lblHash" Content="Hash256" HorizontalAlignment="Left" Margin="10,73,0,0" VerticalAlignment="Top" FontSize="9"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="23" Margin="10,92,0,0" VerticalAlignment="Top" Width="334"/>
+        <Button x:Name="btnOk" Content="OK" HorizontalAlignment="Left" Margin="269,123,0,0" VerticalAlignment="Top" Width="75" Click="btnOk_Click"/>
+
+    </Grid>
+</Window>

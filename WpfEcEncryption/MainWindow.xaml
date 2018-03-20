@@ -1,0 +1,31 @@
+﻿<Window x:Name="EccWin" x:Class="WpfEcEncryption.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfEcEncryption"
+        mc:Ignorable="d"
+        Title="WpfEcEncryption - Text encryption using Elliptic Curve Cryptography" Height="824" Width="785" WindowStyle="ThreeDBorderWindow" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid x:Name="lblPk">
+        <TextBox x:Name="txtPublicKeyX" x:FieldModifier="public" HorizontalAlignment="Left" Height="23" Margin="22,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="626" />
+        <TextBox x:Name="txt2EncryptText" x:FieldModifier="public" HorizontalAlignment="Left" Margin="24,168,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="249" Width="729" BorderThickness="1" BorderBrush="Black" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto">
+        </TextBox>
+        <Label x:Name="lblPbX" Content="Public Key X" HorizontalAlignment="Left" Margin="22,43,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnEncrypt" Content="Encrypt" HorizontalAlignment="Left" Margin="676,69,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="btnEncrypt_Click"/>
+        <TextBox x:Name="txtSecretKey" HorizontalAlignment="Left" Height="23" Margin="22,477,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="626"/>
+        <Label Content="Secret Key" HorizontalAlignment="Left" Margin="22,451,0,0" VerticalAlignment="Top" Width="88"/>
+        <TextBox x:Name="txt2DecryptText" HorizontalAlignment="Left" Margin="24,512,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="249" Width="729" BorderThickness="1" BorderBrush="Black" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" AcceptsTab="True">
+        </TextBox>
+        <Button x:Name="btnDecrypt" Content="Decrypt" HorizontalAlignment="Left" Margin="676,477,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="btnDecrypt_Click"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="1" Margin="0,37,0,0" Stroke="Black" VerticalAlignment="Top" Width="777"/>
+        <Button x:Name="btnGenEcKeys" Content="Generate Keys" Background="LightYellow" HorizontalAlignment="Left" Margin="24,10,0,0" VerticalAlignment="Top" Width="729" FontWeight="Bold" FontStyle="Italic" Click="btnGenEcKeys_Click">
+            <Button.Effect>
+                <DropShadowEffect/>
+            </Button.Effect>
+        </Button>
+        <TextBox x:Name="txtPublicKeyY" HorizontalAlignment="Left" Height="23" Margin="22,125,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="626"/>
+        <Label Content="Public Key Y" HorizontalAlignment="Left" Margin="22,99,0,0" VerticalAlignment="Top"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="1" Margin="0,446,0,0" Stroke="Black" VerticalAlignment="Top" Width="777"/>
+
+    </Grid>
+</Window>
