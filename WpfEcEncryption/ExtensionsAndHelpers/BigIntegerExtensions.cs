@@ -232,7 +232,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
             return r;
         }
 
-        public static bool Coprime(this BigInteger Source, BigInteger N)
+        public static bool CoprimeWith(this BigInteger Source, BigInteger N)
         {
             return 1 == BigInteger.GreatestCommonDivisor(Source, N);
         }
