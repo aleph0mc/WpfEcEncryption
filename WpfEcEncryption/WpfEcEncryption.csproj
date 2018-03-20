@@ -70,7 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="EccGenKeyWindow.xaml">
+    <Page Include="EcGenKeyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -82,8 +82,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EccGenKeyWindow.xaml.cs">
-      <DependentUpon>EccGenKeyWindow.xaml</DependentUpon>
+    <Compile Include="EcGenKeyWindow.xaml.cs">
+      <DependentUpon>EcGenKeyWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ExtensionsAndHelpers\ArrayExtensions.cs" />
     <Compile Include="ExtensionsAndHelpers\Base65536Helper.cs" />
