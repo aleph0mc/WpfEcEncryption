@@ -89,7 +89,7 @@
     <Compile Include="ExtensionsAndHelpers\Base65536Helper.cs" />
     <Compile Include="ExtensionsAndHelpers\BigIntegerExtensions.cs" />
     <Compile Include="ExtensionsAndHelpers\CompressionHelper.cs" />
-    <Compile Include="ExtensionsAndHelpers\EccCryptographyHelper.cs" />
+    <Compile Include="ExtensionsAndHelpers\EcCryptographyHelper.cs" />
     <Compile Include="ExtensionsAndHelpers\PasswordManager.cs" />
     <Compile Include="ExtensionsAndHelpers\EncryptionHelper.cs" />
     <Compile Include="ExtensionsAndHelpers\StringExtensions.cs" />
