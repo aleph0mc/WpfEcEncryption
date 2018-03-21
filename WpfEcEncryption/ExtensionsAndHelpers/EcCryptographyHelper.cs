@@ -15,6 +15,9 @@ namespace EllipticCurves.ExtensionsAndHelpers
         public BigInteger OrderN { get; set; }
     }
 
+    /// <summary>
+    /// Helper class for Elliptic Curve Cryptography
+    /// </summary>
     public static class EcCryptographyHelper
     {
         #region CONSTANTS FOR CURVE sec256k1
