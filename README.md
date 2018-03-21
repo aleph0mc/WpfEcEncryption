@@ -1,6 +1,6 @@
-# WpfEcEncryption
+#Wpf Elliptic Curve Cryptography and RSA
 
-Wpf application for cryptography using Elliptic Curves and Rsa
+Wpf application for cryptography using Elliptic Curve and Rsa
 (for more info see the project EllipticCurveCryptography as well)
 
 
