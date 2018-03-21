@@ -17,6 +17,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
 
     /// <summary>
     /// Helper class for Elliptic Curve Cryptography
+    /// ref. https://www.sciencedirect.com/science/article/pii/S1877050915013332
     /// </summary>
     public static class EcCryptographyHelper
     {
