@@ -17,7 +17,6 @@ namespace EllipticCurves.ExtensionsAndHelpers
 
     /// <summary>
     /// Helper class for Elliptic Curve Cryptography
-    /// ref. https://www.sciencedirect.com/science/article/pii/S1877050915013332
     /// </summary>
     public static class EcCryptographyHelper
     {
@@ -35,7 +34,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
 
         #region ELLIPTIC CURVE KEY PAIR GENERATOR
 
-        private static EcModPoint pointAdd(EcModPoint pointP, EcModPoint pointQ, BigInteger a, BigInteger p)
+        private static EcModPoint pointAdd(EcModPoint pointP, EcModPoint pointQ, BigInteger p)
         {
             // compute m = (y1 - y0) / (x1 - x0) (mod p)
             var x0 = pointP.x;
@@ -99,7 +98,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
             {
                 q = pointDouble(q, a, p);
                 if (bit == '1')
-                    q = pointAdd(q, g, a, p);
+                    q = pointAdd(q, g, p);
             }
 
             return q;
@@ -116,7 +115,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
             if (null == pointQ) // P1 = P0, P2 = P0 + P1 = 2P0
                 ret = pointDouble(pointP, a, p);
             else // P2 = P0 + P1
-                ret = pointAdd(pointP, pointQ, a, p);
+                ret = pointAdd(pointP, pointQ, p);
 
             return ret;
         }
@@ -286,7 +285,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
             foreach (var pnt in lstPm)
             {
                 // a = 0 for secP256k1
-                var pntAdded = pointAdd(pnt, kPb, 0, SEC256K1_P);
+                var pntAdded = pointAdd(pnt, kPb, SEC256K1_P);
                 lstEncr.Add(pntAdded);
             }
 
@@ -330,7 +329,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
             var strMsg = string.Empty;
             foreach (var pnt in LstEncr)
             {
-                var decPnt = pointAdd(pnt, negkPb, 0, SEC256K1_P);
+                var decPnt = pointAdd(pnt, negkPb, SEC256K1_P);
                 // data from x coord
                 var arrUShort = Base65536Helper.ToArray(decPnt.x);
                 var bytes = arrUShort.ToByteArray();
