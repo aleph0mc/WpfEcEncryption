@@ -48,7 +48,18 @@ namespace WpfEcEncryption
             //var bi65536 = Base65536Helper.FromArray(arrShort);
 
             var bi = new BigInteger(bytes);
-            var pk = EcCryptographyHelper.SecP256k1KeyPairGenerator(bi);
+            EcModPoint pk = null;
+            switch (MainWindow.AppWindow.EcType)
+            {
+                case EllipticCurveType.SEC256K1:
+                    pk = EcCryptographyHelper.SecP256k1KeyPairGenerator(bi);
+                    break;
+                case EllipticCurveType.M383:
+                    pk = EcCryptographyHelper.M383KeyPairGenerator(bi);
+                    break;
+                default:
+                    break;
+            }
 
             //MainWindow.AppWindow.txtPublicKeyX.Text = pk.x.ToString();
             //MainWindow.AppWindow.txtPublicKeyY.Text = pk.y.ToString();

@@ -15,8 +15,16 @@ namespace EllipticCurves.ExtensionsAndHelpers
         public BigInteger OrderN { get; set; }
     }
 
+    public enum EllipticCurveType
+    {
+        SEC256K1,
+        M383
+    }
+
     /// <summary>
     /// Helper class for Elliptic Curve Cryptography
+    /// ref: http://safecurves.cr.yp.to/equation.html
+    /// ref. http://www.secg.org/
     /// </summary>
     public static class EcCryptographyHelper
     {
@@ -29,6 +37,22 @@ namespace EllipticCurves.ExtensionsAndHelpers
             x = BigInteger.Parse("55066263022277343669578718895168534326250603453777594175500187360389116729240"),
             y = BigInteger.Parse("32670510020758816978083085130507043184471273380659243275938904335757337482424")
         };
+        private static readonly BigInteger SEC256K1_A = 0;
+        private static readonly BigInteger SEC256K1_B = 7;
+
+        #endregion
+
+        #region CONSTANTS FOR CURVE M-383 (AKA Curve383187)
+
+        private static readonly BigInteger M383_P = BigInteger.Parse("19701003098197239606139520050071806902539869635232723333974146702122860885748605305707133127442457820403313995153221");
+        private static readonly BigInteger M383_N = BigInteger.Parse("2462625387274654950767440006258975862817483704404090416746934574041288984234680883008327183083615266784870011007447");
+        private static readonly EcModPoint M383_G = new EcModPoint
+        {
+            x = BigInteger.Parse("13134002065464826404093013366714537935026579756821815555982764468081907257165736870471422084961638546935542664123876"),
+            y = BigInteger.Parse("4737623401891753997660546300375902576839617167257703725630389791524463565757299203154901655432096558642117242906494")
+        };
+        private static readonly BigInteger M383_A = BigInteger.Parse("6567001032732413202046506683357268967513289878410907777991382234040953628582868435235711042480819273466349716876908");
+        private static readonly BigInteger M383_B = BigInteger.Parse("729666781414712578005167409261918774168143319823434197554598026004550403175874270581745671386758349462616491048773");
 
         #endregion
 
@@ -71,6 +95,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
 
             BigInteger dy = (3 * x0 * x0 + a) % p;
             BigInteger dx = (2 * y0) % p;
+
             dy = (dy + p) % p;
             dx = (dx + p) % p;
 
@@ -150,10 +175,21 @@ namespace EllipticCurves.ExtensionsAndHelpers
         /// <returns></returns>
         public static EcModPoint SecP256k1KeyPairGenerator(BigInteger Sk)
         {
-            // Elliptic curve equation: y^2 = x^3 + a*x + b => y^2 = x^3 + 7
-            var a = 0;
-            var b = 7;
-            return ECKeyPairGenerator(SEC256K1_P, a, b, SEC256K1_G, SEC256K1_N, Sk);
+            // Elliptic curve equation: y^2 = x^3 + 7 (short Weierstrass form)
+            return ECKeyPairGenerator(SEC256K1_P, SEC256K1_A, SEC256K1_B, SEC256K1_G, SEC256K1_N, Sk);
+        }
+
+        /// <summary>
+        /// Return point Q coords representing public key pair (see specs for M-383 parameters)
+        /// </summary>
+        /// <returns></returns>
+        public static EcModPoint M383KeyPairGenerator(BigInteger Sk)
+        {
+            // Elliptic curve equation:
+            // y^2 = x^3 + 6567...6908*x^2 + 7296...48773 (short Weierstrass form, used in this context)
+            // y^2 = x^3 + 2065150*x^2 + x (Montgomery form)
+
+            return ECKeyPairGenerator(M383_P, M383_A, M383_B, M383_G, M383_N, Sk);
         }
 
         /// <summary>
@@ -227,15 +263,39 @@ namespace EllipticCurves.ExtensionsAndHelpers
         #endregion
 
         /// <summary>
-        /// Encrypt text on curve secP256k1 and return a list of points on the elliptic curve
+        /// Encrypt text on elliptic curve and return a list of points on the elliptic curve
         /// </summary>
         /// <param name="Text"></param>
         /// <param name="PubKey"></param>
         /// <returns></returns>
-        public static List<EcModPoint> EncryptSecP256k1(string Text, EcModPoint PubKey)
+        public static List<EcModPoint> EcEncrypt(string Text, EcModPoint PubKey, EllipticCurveType EcType)
         {
+            BigInteger p = 0;
+            BigInteger n = 0;
+            BigInteger a = 0;
+            BigInteger b = 0;
+
+            // Set params
+            switch (EcType)
+            {
+                case EllipticCurveType.SEC256K1:
+                    p = SEC256K1_P;
+                    n = SEC256K1_N;
+                    a = SEC256K1_A;
+                    b = SEC256K1_B;
+                    break;
+                case EllipticCurveType.M383:
+                    p = M383_P;
+                    n = M383_N;
+                    a = M383_A;
+                    b = M383_B;
+                    break;
+                default:
+                    break;
+            }
+
             // return the digits of P base 65536
-            ushort[] digits = Base65536Helper.ToArray(SEC256K1_P);
+            ushort[] digits = Base65536Helper.ToArray(p);
             var partitionLen = digits.Length - 1;
 
             // return a string array with string spit in groups of digits
@@ -272,11 +332,22 @@ namespace EllipticCurves.ExtensionsAndHelpers
 
             // get a random big integer k
             var k = BigIntegerExtensions.NextBigInteger(185, DateTime.Now.Millisecond);
-            // 4) compute k*G for curve secP256k1
-            var kG = SecP256k1KeyPairGenerator(k);
+            // 4) compute k*G for the chosen curve
+            EcModPoint kG = null;
+            switch (EcType)
+            {
+                case EllipticCurveType.SEC256K1:
+                    kG = SecP256k1KeyPairGenerator(k);
+                    break;
+                case EllipticCurveType.M383:
+                    kG = M383KeyPairGenerator(k);
+                    break;
+                default:
+                    break;
+            }
 
             // 5) compute kPb = k(SkG)
-            var kPb = ECKeyPairGenerator(SEC256K1_P, 0, 7, PubKey, SEC256K1_N, k);
+            var kPb = ECKeyPairGenerator(p, a, b, PubKey, n, k);
 
             // 6) compute Pm + kPb = Pc (encrypted data)
             List<EcModPoint> lstEncr = new List<EcModPoint>();
@@ -284,8 +355,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
             lstEncr.Add(kG);
             foreach (var pnt in lstPm)
             {
-                // a = 0 for secP256k1
-                var pntAdded = pointAdd(pnt, kPb, SEC256K1_P);
+                var pntAdded = pointAdd(pnt, kPb, p);
                 lstEncr.Add(pntAdded);
             }
 
@@ -293,32 +363,55 @@ namespace EllipticCurves.ExtensionsAndHelpers
         }
 
         /// <summary>
-        /// Encrypt text on curve secP256k1 and return a list of points on the elliptic curve in Json format (string)
+        /// Encrypt text on elliptic curve and return a list of points on the elliptic curve in Json format (string)
         /// </summary>
         /// <param name="Text"></param>
         /// <param name="PubKey"></param>
         /// <returns></returns>
-        public static string EncryptSecP256k1Json(string Text, EcModPoint PubKey)
+        public static string EcEncryptJson(string Text, EcModPoint PubKey, EllipticCurveType EcType)
         {
-            var lstEncr = EncryptSecP256k1(Text, PubKey);
+            var lstEncr = EcEncrypt(Text, PubKey, EcType);
             var json = JsonConvert.SerializeObject(lstEncr);
 
             return json;
-
         }
 
         /// <summary>
-        /// Dencrypt text on curve secP256k1 and return the message
+        /// Dencrypt text on elliptic curve and return the message
         /// </summary>
         /// <param name="LstEncr"></param>
         /// <param name="SecretKey"></param>
         /// <returns></returns>
-        public static string DecryptSecP256k1(List<EcModPoint> LstEncr, BigInteger SecretKey)
+        public static string EcDecrypt(List<EcModPoint> LstEncr, BigInteger SecretKey, EllipticCurveType EcType)
         {
+            BigInteger p = 0;
+            BigInteger n = 0;
+            BigInteger a = 0;
+            BigInteger b = 0;
+
+            // Set params
+            switch (EcType)
+            {
+                case EllipticCurveType.SEC256K1:
+                    p = SEC256K1_P;
+                    n = SEC256K1_N;
+                    a = SEC256K1_A;
+                    b = SEC256K1_B;
+                    break;
+                case EllipticCurveType.M383:
+                    p = M383_P;
+                    n = M383_N;
+                    a = M383_A;
+                    b = M383_B;
+                    break;
+                default:
+                    break;
+            }
+
             // 1) get kG
             var kG = LstEncr.First();
             // 2) compute kPb = k(SkG) = Sk(kG)
-            var kPb = ECKeyPairGenerator(SEC256K1_P, 0, 7, kG, SEC256K1_N, SecretKey);
+            var kPb = ECKeyPairGenerator(p, a, b, kG, n, SecretKey);
             // set -kPb
             var negkPb = new EcModPoint { x = kPb.x, y = -kPb.y };
 
@@ -329,7 +422,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
             var strMsg = string.Empty;
             foreach (var pnt in LstEncr)
             {
-                var decPnt = pointAdd(pnt, negkPb, SEC256K1_P);
+                var decPnt = pointAdd(pnt, negkPb, p);
                 // data from x coord
                 var arrUShort = Base65536Helper.ToArray(decPnt.x);
                 var bytes = arrUShort.ToByteArray();
@@ -346,15 +439,15 @@ namespace EllipticCurves.ExtensionsAndHelpers
         }
 
         /// <summary>
-        /// Decrypt text on curve secP256k1 using the list of points on the elliptic curve in Json format (string)
+        /// Decrypt text on elliptic curve using the list of points on the elliptic curve in Json format (string)
         /// </summary>
         /// <param name="JsonCrypt"></param>
         /// <param name="SecretKey"></param>
         /// <returns></returns>
-        public static string DecryptSecP256k1Json(string JsonCrypt, BigInteger SecretKey)
+        public static string EcDecryptJson(string JsonCrypt, BigInteger SecretKey, EllipticCurveType EcType)
         {
             var deserLst = JsonConvert.DeserializeObject<List<EcModPoint>>(JsonCrypt);
-            var msg = DecryptSecP256k1(deserLst, SecretKey);
+            var msg = EcDecrypt(deserLst, SecretKey, EcType);
             return msg;
         }
     }

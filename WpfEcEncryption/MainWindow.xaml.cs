@@ -23,6 +23,7 @@ namespace WpfEcEncryption
     public partial class MainWindow : Window
     {
         public static MainWindow AppWindow;
+        public EllipticCurveType EcType;
 
         public MainWindow()
         {
@@ -48,7 +49,7 @@ namespace WpfEcEncryption
             var pbX = BigIntegerExtensions.HexadecimalStringToDecimal(txtPublicKeyX.Text);
             var pbY = BigIntegerExtensions.HexadecimalStringToDecimal(txtPublicKeyY.Text);
             var pb = new EcModPoint { x = pbX, y = pbY };
-            var encryptStr = EcCryptographyHelper.EncryptSecP256k1Json(text2encrypt, pb);
+            var encryptStr = EcCryptographyHelper.EcEncryptJson(text2encrypt, pb, EcType);
 
             // First compression
             var compStr = CompressionHelper.ZipBase65536HexStringBase64(encryptStr);
@@ -80,12 +81,12 @@ namespace WpfEcEncryption
             var rsaDecBase64 = EncryptionHelper.DecryptFromHexString(decompMsg);
 
             // Second decompression
-             decompMsg = CompressionHelper.UnzipBase65536HexStringBase64(rsaDecBase64);
+            decompMsg = CompressionHelper.UnzipBase65536HexStringBase64(rsaDecBase64);
 
             // Decryption
             var strSk = txtSecretKey.Text;
             var sk = BigIntegerExtensions.HexadecimalStringToDecimal(strSk);
-            var decryptedStr = EcCryptographyHelper.DecryptSecP256k1Json(decompMsg, sk);
+            var decryptedStr = EcCryptographyHelper.EcDecryptJson(decompMsg, sk, EcType);
 
             txt2EncryptText.Text = decryptedStr;
             txt2DecryptText.Text = string.Empty;
@@ -96,6 +97,12 @@ namespace WpfEcEncryption
             var eccWin = new EccGenKeyWindow();
             eccWin.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             eccWin.ShowDialog();
+        }
+
+        private void radioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton ck = sender as RadioButton;
+            EcType = ck.Content.Equals("secp256k1") ? EllipticCurveType.SEC256K1 : EllipticCurveType.M383;
         }
     }
 }
