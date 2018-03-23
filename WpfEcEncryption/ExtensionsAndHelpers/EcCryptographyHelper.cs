@@ -186,7 +186,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
         public static EcModPoint M383KeyPairGenerator(BigInteger Sk)
         {
             // Elliptic curve equation:
-            // y^2 = x^3 + 6567...6908*x^2 + 7296...48773 (short Weierstrass form, used in this context)
+            // y^2 = x^3 + 6567...6908*x + 7296...48773 (short Weierstrass form, used in this context)
             // y^2 = x^3 + 2065150*x^2 + x (Montgomery form)
 
             return ECKeyPairGenerator(M383_P, M383_A, M383_B, M383_G, M383_N, Sk);
