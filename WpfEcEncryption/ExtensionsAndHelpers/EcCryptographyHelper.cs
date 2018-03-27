@@ -298,7 +298,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
             ushort[] digits = Base65536Helper.ToArray(p);
             var partitionLen = digits.Length - 1;
 
-            // return a string array with string spit in groups of digits
+            // return a string array with string split in groups of digits
             var partitionStrings = Text.SplitInGroup(partitionLen);
 
             // 1) create a list of big integers out of partitioned message

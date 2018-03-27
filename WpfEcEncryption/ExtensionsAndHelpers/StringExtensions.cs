@@ -12,7 +12,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
 
             var len = Source.Length;
 
-            var grpCnt = len / GroupSize; // count groups
+            var grpCnt = len / GroupSize; // group count
             var grpRem = len % GroupSize; // reminder group
 
             var idx = 0;
