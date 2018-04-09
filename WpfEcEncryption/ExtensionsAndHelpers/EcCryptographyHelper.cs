@@ -17,7 +17,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
 
     public enum EllipticCurveType
     {
-        SEC256K1,
+        SECP256K1,
         M383
     }
 
@@ -28,17 +28,17 @@ namespace EllipticCurves.ExtensionsAndHelpers
     /// </summary>
     public static class EcCryptographyHelper
     {
-        #region CONSTANTS FOR CURVE sec256k1
+        #region CONSTANTS FOR CURVE secp256k1
 
-        private static readonly BigInteger SEC256K1_P = BigInteger.Parse("115792089237316195423570985008687907853269984665640564039457584007908834671663");
-        private static readonly BigInteger SEC256K1_N = BigInteger.Parse("115792089237316195423570985008687907852837564279074904382605163141518161494337");
-        private static readonly EcModPoint SEC256K1_G = new EcModPoint
+        private static readonly BigInteger SECP256K1_P = BigInteger.Parse("115792089237316195423570985008687907853269984665640564039457584007908834671663");
+        private static readonly BigInteger SECP256K1_N = BigInteger.Parse("115792089237316195423570985008687907852837564279074904382605163141518161494337");
+        private static readonly EcModPoint SECP256K1_G = new EcModPoint
         {
             x = BigInteger.Parse("55066263022277343669578718895168534326250603453777594175500187360389116729240"),
             y = BigInteger.Parse("32670510020758816978083085130507043184471273380659243275938904335757337482424")
         };
-        private static readonly BigInteger SEC256K1_A = 0;
-        private static readonly BigInteger SEC256K1_B = 7;
+        private static readonly BigInteger SECP256K1_A = 0;
+        private static readonly BigInteger SECP256K1_B = 7;
 
         #endregion
 
@@ -176,7 +176,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
         public static EcModPoint SecP256k1KeyPairGenerator(BigInteger Sk)
         {
             // Elliptic curve equation: y^2 = x^3 + 7 (short Weierstrass form)
-            return ECKeyPairGenerator(SEC256K1_P, SEC256K1_A, SEC256K1_B, SEC256K1_G, SEC256K1_N, Sk);
+            return ECKeyPairGenerator(SECP256K1_P, SECP256K1_A, SECP256K1_B, SECP256K1_G, SECP256K1_N, Sk);
         }
 
         /// <summary>
@@ -278,11 +278,11 @@ namespace EllipticCurves.ExtensionsAndHelpers
             // Set params
             switch (EcType)
             {
-                case EllipticCurveType.SEC256K1:
-                    p = SEC256K1_P;
-                    n = SEC256K1_N;
-                    a = SEC256K1_A;
-                    b = SEC256K1_B;
+                case EllipticCurveType.SECP256K1:
+                    p = SECP256K1_P;
+                    n = SECP256K1_N;
+                    a = SECP256K1_A;
+                    b = SECP256K1_B;
                     break;
                 case EllipticCurveType.M383:
                     p = M383_P;
@@ -336,7 +336,7 @@ namespace EllipticCurves.ExtensionsAndHelpers
             EcModPoint kG = null;
             switch (EcType)
             {
-                case EllipticCurveType.SEC256K1:
+                case EllipticCurveType.SECP256K1:
                     kG = SecP256k1KeyPairGenerator(k);
                     break;
                 case EllipticCurveType.M383:
@@ -392,11 +392,11 @@ namespace EllipticCurves.ExtensionsAndHelpers
             // Set params
             switch (EcType)
             {
-                case EllipticCurveType.SEC256K1:
-                    p = SEC256K1_P;
-                    n = SEC256K1_N;
-                    a = SEC256K1_A;
-                    b = SEC256K1_B;
+                case EllipticCurveType.SECP256K1:
+                    p = SECP256K1_P;
+                    n = SECP256K1_N;
+                    a = SECP256K1_A;
+                    b = SECP256K1_B;
                     break;
                 case EllipticCurveType.M383:
                     p = M383_P;

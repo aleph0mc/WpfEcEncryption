@@ -51,7 +51,7 @@ namespace WpfEcEncryption
             EcModPoint pk = null;
             switch (MainWindow.AppWindow.EcType)
             {
-                case EllipticCurveType.SEC256K1:
+                case EllipticCurveType.SECP256K1:
                     pk = EcCryptographyHelper.SecP256k1KeyPairGenerator(bi);
                     break;
                 case EllipticCurveType.M383:
