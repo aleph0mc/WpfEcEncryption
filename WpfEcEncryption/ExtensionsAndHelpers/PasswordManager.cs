@@ -35,7 +35,9 @@ namespace EllipticCurves.ExtensionsAndHelpers
 
         public static int Strength(string Password)
         {
-            var res = new Zxcvbn.Zxcvbn().EvaluatePassword(Password);
+            if (string.IsNullOrEmpty(Password))
+                return 0;
+            var res = Zxcvbn.Core.EvaluatePassword(Password);
             return (int)res.Entropy;
         }
 

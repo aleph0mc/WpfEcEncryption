@@ -27,7 +27,7 @@ namespace WpfEcEncryption
             InitializeComponent();
         }
 
-        private void txtChosenPwd_KeyDown(object sender, KeyEventArgs e)
+        private void txtChosenPwd_KeyUp(object sender, KeyEventArgs e)
         {
             var txtPwd = sender as TextBox;
             var pwd = txtPwd.Text;

@@ -43,8 +43,8 @@ namespace EllipticCurves.ExtensionsAndHelpers
             CspParameters cspParams;
             cspParams = new CspParameters(PROVIDER_RSA_FULL);
             cspParams.KeyContainerName = CONTAINER_NAME;
-            cspParams.Flags = CspProviderFlags.UseMachineKeyStore;
-            cspParams.ProviderName = "Microsoft Strong Cryptographic Provider";
+            //cspParams.Flags = CspProviderFlags.UseMachineKeyStore;
+            //cspParams.ProviderName = "Microsoft Strong Cryptographic Provider";
             var rsa = new RSACryptoServiceProvider(cspParams);
 
             // Create the key repo if it doesn't exists
