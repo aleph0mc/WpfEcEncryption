@@ -192,74 +192,6 @@ namespace EllipticCurves.ExtensionsAndHelpers
             return ECKeyPairGenerator(M383_P, M383_A, M383_B, M383_G, M383_N, Sk);
         }
 
-        /// <summary>
-        /// Returns the final point via summation. This method is very slow. Do not use big value for Sk.
-        /// </summary>
-        /// <param name="A"></param>
-        /// <param name="B"></param>
-        /// <param name="G"></param>
-        /// <param name="Sk"></param>
-        /// <returns></returns>
-        public static EcModPoint EcSlowKeyPairGeneratorByClassicPointSum(BigInteger P, BigInteger A, BigInteger B, EcModPoint G, int Sk)
-        {
-            var delta = 4 * A * A * A + 27 * B * B;
-            if (0 == delta)
-                throw new Exception("Delta cannot be zero.");
-
-            int cnt = 2;
-            bool inf = false;
-            EcModPoint qMod = null;
-            while (cnt <= Sk && !inf)
-            {
-                qMod = computePointSum(A, G, qMod, P);
-                inf = G.x == qMod.x;
-                if (inf)
-                {
-                    qMod.IsInf = true;
-                    qMod.OrderN = cnt;
-                }
-                ++cnt;
-            }
-
-            return qMod;
-        }
-
-        /// <summary>
-        /// Returns the list of points by addition (P + Q). This method is very slow. Do not use big value for Sk.
-        /// </summary>
-        /// <param name="P"></param>
-        /// <param name="A"></param>
-        /// <param name="B></param>
-        /// <param name="G"></param>
-        /// <param name="Sk"></param>
-        /// <returns></returns>
-        public static List<EcModPoint> EcSlowPointListByAddition(BigInteger P, BigInteger A, BigInteger B, EcModPoint G, int Sk)
-        {
-            var delta = 4 * A * A * A + 27 * B * B;
-            if (0 == delta)
-                throw new Exception("Delta cannot be zero.");
-
-            var ret = new List<EcModPoint>();
-            ret.Add(G);
-            int cnt = 2;
-            bool inf = false;
-            EcModPoint qMod = null;
-            while (cnt <= Sk && !inf)
-            {
-                qMod = computePointSum(A, G, qMod, P);
-                inf = G.x == qMod.x;
-                if (inf)
-                {
-                    qMod.IsInf = true;
-                    qMod.OrderN = cnt;
-                }
-                ret.Add(qMod);
-                ++cnt;
-            }
-
-            return ret;
-        }
-
         #endregion
 
         /// <summary>
@@ -450,5 +382,75 @@ namespace EllipticCurves.ExtensionsAndHelpers
             var msg = EcDecrypt(deserLst, SecretKey, EcType);
             return msg;
         }
+
+        #region NOT USED METHODS
+        ///// <summary>
+        ///// Returns the final point via summation. This method is very slow. Do not use big value for Sk.
+        ///// </summary>
+        ///// <param name="A"></param>
+        ///// <param name="B"></param>
+        ///// <param name="G"></param>
+        ///// <param name="Sk"></param>
+        ///// <returns></returns>
+        //public static EcModPoint EcSlowKeyPairGeneratorByClassicPointSum(BigInteger P, BigInteger A, BigInteger B, EcModPoint G, int Sk)
+        //{
+        //    var delta = 4 * A * A * A + 27 * B * B;
+        //    if (0 == delta)
+        //        throw new Exception("Delta cannot be zero.");
+
+        //    int cnt = 2;
+        //    bool inf = false;
+        //    EcModPoint qMod = null;
+        //    while (cnt <= Sk && !inf)
+        //    {
+        //        qMod = computePointSum(A, G, qMod, P);
+        //        inf = G.x == qMod.x;
+        //        if (inf)
+        //        {
+        //            qMod.IsInf = true;
+        //            qMod.OrderN = cnt;
+        //        }
+        //        ++cnt;
+        //    }
+
+        //    return qMod;
+        //}
+
+        ///// <summary>
+        ///// Returns the list of points by addition (P + Q). This method is very slow. Do not use big value for Sk.
+        ///// </summary>
+        ///// <param name="P"></param>
+        ///// <param name="A"></param>
+        ///// <param name="B></param>
+        ///// <param name="G"></param>
+        ///// <param name="Sk"></param>
+        ///// <returns></returns>
+        //public static List<EcModPoint> EcSlowPointListByAddition(BigInteger P, BigInteger A, BigInteger B, EcModPoint G, int Sk)
+        //{
+        //    var delta = 4 * A * A * A + 27 * B * B;
+        //    if (0 == delta)
+        //        throw new Exception("Delta cannot be zero.");
+
+        //    var ret = new List<EcModPoint>();
+        //    ret.Add(G);
+        //    int cnt = 2;
+        //    bool inf = false;
+        //    EcModPoint qMod = null;
+        //    while (cnt <= Sk && !inf)
+        //    {
+        //        qMod = computePointSum(A, G, qMod, P);
+        //        inf = G.x == qMod.x;
+        //        if (inf)
+        //        {
+        //            qMod.IsInf = true;
+        //            qMod.OrderN = cnt;
+        //        }
+        //        ret.Add(qMod);
+        //        ++cnt;
+        //    }
+
+        //    return ret;
+        //}
+        #endregion
     }
 }
