@@ -29,6 +29,7 @@
         <Label x:Name="lblEcType" Content="Elliptic Curve Type" HorizontalAlignment="Left" Margin="22,14,0,0" VerticalAlignment="Top" Width="119"/>
         <RadioButton x:Name="rd_secp256k1" Content="secp256k1" HorizontalAlignment="Left" Margin="168,20,0,0" VerticalAlignment="Top" Width="98" GroupName="EcType" IsChecked="True" Checked="radioButton_Checked"/>
         <RadioButton x:Name="rd_M383" Content="M-383" HorizontalAlignment="Left" Margin="307,20,0,0" VerticalAlignment="Top" Width="93" Height="15" GroupName="EcType" Checked="radioButton_Checked"/>
+        <RadioButton x:Name="rd_secp521r1" Content="secp521r1 (recom.)" HorizontalAlignment="Left" Margin="446,20,0,0" VerticalAlignment="Top" Width="124" Height="15" GroupName="EcType" Checked="radioButton_Checked"/>
 
     </Grid>
 </Window>

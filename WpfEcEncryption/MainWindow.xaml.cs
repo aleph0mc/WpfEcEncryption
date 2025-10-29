@@ -102,7 +102,8 @@ namespace WpfEcEncryption
         private void radioButton_Checked(object sender, RoutedEventArgs e)
         {
             RadioButton ck = sender as RadioButton;
-            EcType = ck.Content.Equals("secp256k1") ? EllipticCurveType.SECP256K1 : EllipticCurveType.M383;
+            EcType = ck.Content.Equals("secp256k1") ? EllipticCurveType.SECP256K1 :
+                ck.Content.Equals("M-383") ? EllipticCurveType.M383 : EllipticCurveType.SECP521R1;
         }
     }
 }

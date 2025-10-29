@@ -18,7 +18,8 @@ namespace EllipticCurves.ExtensionsAndHelpers
     public enum EllipticCurveType
     {
         SECP256K1,
-        M383
+        M383,
+        SECP521R1
     }
 
     /// <summary>
@@ -53,6 +54,20 @@ namespace EllipticCurves.ExtensionsAndHelpers
         };
         private static readonly BigInteger M383_A = BigInteger.Parse("6567001032732413202046506683357268967513289878410907777991382234040953628582868435235711042480819273466349716876908");
         private static readonly BigInteger M383_B = BigInteger.Parse("729666781414712578005167409261918774168143319823434197554598026004550403175874270581745671386758349462616491048773");
+
+        #endregion
+
+        #region CONSTANTS FOR CURVE secp521r1
+
+        private static readonly BigInteger SECP521R1_P = BigInteger.Parse("6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151");
+        private static readonly BigInteger SECP521R1_N = BigInteger.Parse("6864797660130609714981900799081393217269435300143305409394463459185543183397655394245057746333217197532963996371363321113864768612440380340372808892707005449");
+        private static readonly EcModPoint SECP521R1_G = new EcModPoint
+        {
+            x = BigInteger.Parse("2661740802050217063228768716723360960729859168756973147706671368418802944996427808491545080627771902352094241225065558662157113545570916814161637315895999846"),
+            y = BigInteger.Parse("3757180025770020463545507224491183603594455134769762486694567779615544477440556316691234405012945539562144444537289428522585666729196580810124344277578376784")
+        };
+        private static readonly BigInteger SECP521R1_A = BigInteger.Parse("6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057148");
+        private static readonly BigInteger SECP521R1_B = BigInteger.Parse("1093849038073734274511112390766805569936207598951683748994586394495953116150735016013708737573759623248592132296706313309438452531591012912142327488478985984");
 
         #endregion
 
@@ -130,21 +145,6 @@ namespace EllipticCurves.ExtensionsAndHelpers
 
         }
 
-        private static EcModPoint computePointSum(BigInteger a, EcModPoint pointP, EcModPoint pointQ, BigInteger p)
-        {
-            BigInteger x2 = 0;
-            BigInteger y2 = 0;
-            BigInteger m = 0;
-            EcModPoint ret = null;
-
-            if (null == pointQ) // P1 = P0, P2 = P0 + P1 = 2P0
-                ret = pointDouble(pointP, a, p);
-            else // P2 = P0 + P1
-                ret = pointAdd(pointP, pointQ, p);
-
-            return ret;
-        }
-
         /// <summary>
         /// Returns the key pair
         /// </summary>
@@ -192,6 +192,16 @@ namespace EllipticCurves.ExtensionsAndHelpers
             return ECKeyPairGenerator(M383_P, M383_A, M383_B, M383_G, M383_N, Sk);
         }
 
+        /// <summary>
+        /// Return point Q coords representing public key pair (see specs for secp521r1 parameters)
+        /// </summary>
+        /// <returns></returns>
+        public static EcModPoint SecP521r1KeyPairGenerator(BigInteger Sk)
+        {
+            // Elliptic curve equation: y^2 = x^3 + 686...7148*x + 109...5984 (short Weierstrass form)
+            return ECKeyPairGenerator(SECP521R1_P, SECP521R1_A, SECP521R1_B, SECP521R1_G, SECP521R1_N, Sk);
+        }
+
         #endregion
 
         /// <summary>
@@ -221,6 +231,12 @@ namespace EllipticCurves.ExtensionsAndHelpers
                     n = M383_N;
                     a = M383_A;
                     b = M383_B;
+                    break;
+                case EllipticCurveType.SECP521R1:
+                    p = SECP521R1_P;
+                    n = SECP521R1_N;
+                    a = SECP521R1_A;
+                    b = SECP521R1_B;
                     break;
                 default:
                     break;
@@ -273,6 +289,9 @@ namespace EllipticCurves.ExtensionsAndHelpers
                     break;
                 case EllipticCurveType.M383:
                     kG = M383KeyPairGenerator(k);
+                    break;
+                case EllipticCurveType.SECP521R1:
+                    kG = SecP521r1KeyPairGenerator(k);
                     break;
                 default:
                     break;
@@ -336,6 +355,12 @@ namespace EllipticCurves.ExtensionsAndHelpers
                     a = M383_A;
                     b = M383_B;
                     break;
+                case EllipticCurveType.SECP521R1:
+                    p = SECP521R1_P;
+                    n = SECP521R1_N;
+                    a = SECP521R1_A;
+                    b = SECP521R1_B;
+                    break;
                 default:
                     break;
             }
@@ -382,75 +407,5 @@ namespace EllipticCurves.ExtensionsAndHelpers
             var msg = EcDecrypt(deserLst, SecretKey, EcType);
             return msg;
         }
-
-        #region NOT USED METHODS
-        ///// <summary>
-        ///// Returns the final point via summation. This method is very slow. Do not use big value for Sk.
-        ///// </summary>
-        ///// <param name="A"></param>
-        ///// <param name="B"></param>
-        ///// <param name="G"></param>
-        ///// <param name="Sk"></param>
-        ///// <returns></returns>
-        //public static EcModPoint EcSlowKeyPairGeneratorByClassicPointSum(BigInteger P, BigInteger A, BigInteger B, EcModPoint G, int Sk)
-        //{
-        //    var delta = 4 * A * A * A + 27 * B * B;
-        //    if (0 == delta)
-        //        throw new Exception("Delta cannot be zero.");
-
-        //    int cnt = 2;
-        //    bool inf = false;
-        //    EcModPoint qMod = null;
-        //    while (cnt <= Sk && !inf)
-        //    {
-        //        qMod = computePointSum(A, G, qMod, P);
-        //        inf = G.x == qMod.x;
-        //        if (inf)
-        //        {
-        //            qMod.IsInf = true;
-        //            qMod.OrderN = cnt;
-        //        }
-        //        ++cnt;
-        //    }
-
-        //    return qMod;
-        //}
-
-        ///// <summary>
-        ///// Returns the list of points by addition (P + Q). This method is very slow. Do not use big value for Sk.
-        ///// </summary>
-        ///// <param name="P"></param>
-        ///// <param name="A"></param>
-        ///// <param name="B></param>
-        ///// <param name="G"></param>
-        ///// <param name="Sk"></param>
-        ///// <returns></returns>
-        //public static List<EcModPoint> EcSlowPointListByAddition(BigInteger P, BigInteger A, BigInteger B, EcModPoint G, int Sk)
-        //{
-        //    var delta = 4 * A * A * A + 27 * B * B;
-        //    if (0 == delta)
-        //        throw new Exception("Delta cannot be zero.");
-
-        //    var ret = new List<EcModPoint>();
-        //    ret.Add(G);
-        //    int cnt = 2;
-        //    bool inf = false;
-        //    EcModPoint qMod = null;
-        //    while (cnt <= Sk && !inf)
-        //    {
-        //        qMod = computePointSum(A, G, qMod, P);
-        //        inf = G.x == qMod.x;
-        //        if (inf)
-        //        {
-        //            qMod.IsInf = true;
-        //            qMod.OrderN = cnt;
-        //        }
-        //        ret.Add(qMod);
-        //        ++cnt;
-        //    }
-
-        //    return ret;
-        //}
-        #endregion
     }
 }

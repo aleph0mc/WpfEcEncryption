@@ -57,6 +57,9 @@ namespace WpfEcEncryption
                 case EllipticCurveType.M383:
                     pk = EcCryptographyHelper.M383KeyPairGenerator(bi);
                     break;
+                case EllipticCurveType.SECP521R1:
+                    pk = EcCryptographyHelper.SecP521r1KeyPairGenerator(bi);
+                    break;
                 default:
                     break;
             }
